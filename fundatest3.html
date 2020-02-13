@@ -1,0 +1,24 @@
+<html>
+    <script>
+        
+function kembalian(uang) {
+  const pecahan = [25, 10, 5, 1];
+  let output = '';
+  for (const koin of pecahan) {
+    while (uang >= koin) {
+      uang -= 25;
+      output++;
+    }
+  }
+  return output;
+}
+console.log(kembalian(41))
+
+// var hari= 485;
+// var yearall=(Math.floor(hari/360));
+// var monthall=(Math.floor((hari%360)/30));
+// var weekall=(Math.floor((hari%360-monthall*30)/7));
+// var dayall=(hari%360-monthall*30)
+// console.log(yearall + ' tahun ' + monthall + ' bulan ' + weekall + ' minggu ' + dayall + ' hari ')
+    </script>
+</html>

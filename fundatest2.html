@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table,td,th {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 20px;
+            margin: 0 auto;
+            text-align: center;   
+        }
+    </style>
+</head>
+<body>
+    <center>
+        <center>
+            <h1>Madding</h1>
+            Username: <input type="text" id="user" placeholder="Input Username"> <br><br>
+            Password: <input type="password" id="password" placeholder="Input Password"> <br> <br>
+            <button onclick="login()">Login</button>
+            <p id='isi'>
+    
+            </p>
+        </center>
+        <p id='isi'>
+
+        </p>
+        <table>
+            <tr>
+                <td>No</td>
+                <td>Kegiatan</td>
+                <td>Hari</td>
+                <td>Poster</td>
+                <td>Action</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="text" id='kegiatan' placeholder="nama kegiatan"></td>
+                <td>
+                    <select id="hari">
+                        <option hidden value="">pilih hari ..</option>
+                        <option value="senin">senin</option>
+                        <option value="selasa">selasa</option>
+                        <option value="rabu">rabu</option>
+                        <option value="kamis">kamis</option>
+                        <option value="jumat">jumat</option>
+                        <option value="sabtu">sabtu</option>
+                        <option value="minggu">minggu</option>
+                    </select>
+                </td>
+                <td><input type="file" id="gambar" name="img" accept="image/*"></td>
+                <td><button onclick="inputdataonClick()">input data</button></td>
+            </tr>
+        </table>
+        <br><br>
+    </center>
+
+<script>
+    class user{
+        constructor(username,password,role){
+            this.username=username,
+            this.password=password,
+            this.role=role
+        }
+    }
+
+    class Todo{
+        constructor(kegiatan,hari,gambar){
+            this.kegiatan=kegiatan,
+            this.hari=hari,
+            this.gambar=gambar;
+        }
+    }
+var datauser=[
+    new user(`admin`,`matcha`,`admin`),
+    new user('putri','theda','user')
+]
+var data=[
+        new Todo('Sightseeing','senin','ambiance.jpg'),
+        new Todo('Visualizing','selasa','VM.jpg')
+    ]
+
+
+function edit(idTodo){
+    console.log(data[idTodo]);
+    reloadData()
+}
+
+function reloadData(){
+    var output=''
+    data.forEach((val,index)=>{
+        output+=`   <tr>
+                        <td>${index+1}</td>
+                        <td>${val.kegiatan}</td>
+                        <td>${val.hari}</td>
+                        <td><img src=${val.gambar} alt=${val.kegiatan} height='200px'></td>
+                        <td>
+                            <button onclick="editkegiatan(${index})">edit</button>
+                            <button onclick="deletekegiatan(${index})">delete</button>
+                        </td>
+                    </tr>`
+    })
+    document.getElementsByTagName('tbody')[0].innerHTML=output
+}
+
+function editkegiatan(id){
+    var output=''
+    output+=`<tr><td>${id+1}</td>
+                            <td><input type="text" id='editkegiatan' placeholder="nama kegiatan" value=${data[id].kegiatan}></td>
+                            <td>
+                                <select id="edithari" >
+                                    <option hidden value="">pilih hari ..</option>
+                                    <option value="senin">senin</option>
+                                    <option value="selasa">selasa</option>
+                                    <option value="rabu">rabu</option>
+                                    <option value="kamis">kamis</option>
+                                    <option value="jumat">jumat</option>
+                                    <option value="sabtu">sabtu</option>
+                                    <option value="minggu">minggu</option>
+                                </select>
+                            <td><input type="text" id='editgambar' placeholder="Gambar" value=${data[id].gambar}></td>
+                            </td>
+                            <td>
+                                <button onclick="updatedata(${id})">Save</button>
+                                <button onclick="cancelupdatedata()">Cancel</button>
+                        </tr>`
+    document.getElementsByTagName('tbody')[0].innerHTML=output
+}
+
+const updatedata=(indexed)=>{
+    var newkegiatan=document.getElementById('editkegiatan').value
+    var newhari=document.getElementById('edithari').value
+    var newimage=document.getElementById('editgambar').value
+    if(newkegiatan===''){
+        newkegiatan=data[indexed].kegiatan
+    }
+    if(newhari===''){
+        newhari=data[indexed].hari
+    }
+    if(newimage===''){
+        newimage=data[indexed].gambar
+    }
+    data.splice(indexed,1,new Todo(newkegiatan,newimage,newhari))
+    indexedit=-1
+    reloadData()
+}
+const inputdataonClick=()=>{
+    var kegiatan=document.getElementById('kegiatan').value
+    var hari=document.getElementById('hari').value
+    var gambar=document.getElementById('gambar').value
+    if(kegiatan==''||gambar==''||hari==''){
+        alert('mohon masukkan semua')
+    }else{
+        data.push(new Todo(kegiatan,hari,gambar))
+        document.getElementById('kegiatan').value=''
+        document.getElementById('hari').value=''
+        document.getElementById('gambar').value=''
+        reloadData();
+    }
+}
+reloadData();
+
+var userlogin=[]
+
+var salah=0
+const login=()=>{
+    var username=document.getElementById('user').value
+    var password=document.getElementById('password').value
+    if(username&&password){
+        var cekdata=datauser.filter((val)=>val.username==username&&val.password==password)
+        if(cekdata.length===1){
+            userlogin=cekdata[0]
+           var output=`<h2>Masuk Sebagai ${cekdata[0].role}</h2>
+                      <h3>username adalah ${cekdata[0].username}</h3>
+                      <button onclick='logout()'>logout</button>`
+            document.getElementById('user').value=''
+            document.getElementById('password').value=''
+            document.getElementById('isi').innerHTML=output
+        }else{
+            if(salah===0){
+                document.getElementById('isi').innerHTML='<h2>Password atau Username salah</h2>'
+            }
+        }       
+    }else{
+        document.getElementById('isi').innerHTML='<h2>Masukan Password Atau Username</h2>'
+    }
+}
+
+const logout=()=>{
+    userlogin=[]
+    document.getElementsByTagName('tr')[0].innerHTML=''
+    document.getElementsByTagName('tr')[1].innerHTML=''
+    document.getElementById('isi').innerHTML=''
+}
+</script> 
+</body>
+</html>
